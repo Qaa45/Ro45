@@ -1,0 +1,417 @@
+MLOPS PRACTICAL PROBLEM STATEMENT
+ 
+1. Setting Up a Version Control System (VCS): You are required to set up and use Git and GitHub to manage a basic machine learning project.
+a. Tasks to Perform:
+→
+i. Create a GitHub Repository: 
+• Go to https://github.com
+• Click on “New” to create a repository.
+• Fill in:
+• Repository name: ml-project-demo
+• Description: Basic ML project with Git version control
+• Check "Add a README file"
+• Click "Create repository"
+ 
+ii.Initialize with a README File: 
+• In your Git, after creating a new repository on the right side, you need to click on "Code" and then copy the link from there.
+ 
+iii. Upload a Sample Dataset:
+• You can use any dataset.
+git add iris.csv
+git commit -m "Add sample dataset - iris.csv"
+git push
+ 
+iv. Collaborate on the Repository:
+• To allow collaboration:
+1. Go to your GitHub repo.
+2. Click "Settings" → "Collaborators"
+3. Add your teammates by GitHub username or email.
+4. They’ll receive an invitation to accept and collaborate.
+5. They can then:
+git clone https://github.com/your-username/ml-project-demo.git
+# Make changes
+git add .
+git commit -m "Their changes"
+git push
+ 
+v.Commit and push the changes: 
+git add .
+git commit -m "Describe your change here"
+git push
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+2. Model Training and Versioning using a Simple Dataset:
+In this assignment, you will work with a small dataset (e.g., the Iris dataset) to build and manage versions of a basic machine learning model.
+a. Tasks to Perform:
+→
+i. Data Preparation:
+• Load the Iris dataset (it's a small dataset that’s easy to use).
+• Split the data into training and testing sets.
+CODE:
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+data = load_iris()
+X = data.data
+y = data.target
+ 
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+ 
+ii.Model Training:  
+CODE:
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score
+ 
+model_v1 = KNeighborsClassifier()
+model_v1.fit(X_train, y_train)
+y_pred = model_v1.predict(X_test)
+ 
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Model Accuracy: {accuracy}")
+ 
+iii. Hyperparameter Tuning:
+• We will tune the n_neighbors parameter for better model performance using GridSearchCV.
+ 
+CODE:
+from sklearn.model_selection import GridSearchCV
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score
+param_grid = {'n_neighbors': [3, 5, 7, 9, 11]}
+grid_search = GridSearchCV(KNeighborsClassifier(), param_grid, cv=5)
+grid_search.fit(X_train, y_train)
+best_model = grid_search.best_estimator_
+ 
+y_pred_best = best_model.predict(X_test)
+accuracy_best = accuracy_score(y_test, y_pred_best)
+print(f"Tuned Model Accuracy: {accuracy_best}")
+ 
+iv. Record the results for comparison.
+CODE:
+print(f"Original Model Accuracy: {accuracy}")
+print(f"Tuned Model Accuracy: {accuracy_best}")
+ 
+v. Model Versioning: Save each trained model as a separate version using meaningful filenames (e.g., model_v1.pkl, model_v2.pkl)
+• Now, we’ll save the models as versions (model_v1.pkl, model_v2.pkl) using joblib.
+CODE:
+import joblib
+ 
+joblib.dump(model_v1, 'model_v1.pkl')
+ 
+joblib.dump(best_model, 'model_v2.pkl')
+ 
+print("Models Saved as model_v1.pkl and model_v2.pkl")
+
+
+
+
+
+
+ 
+ 
+3. Saving and Reusing a Machine Learning Model:
+In this assignment, you will train a machine learning model using a simple dataset and learn how to save and reuse the model without retraining.
+a. Tasks to Perform:
+→
+i. Train a Model: 
+CODE:
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+X, y = load_iris(return_X_y=True)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+model = KNeighborsClassifier()
+model.fit(X_train, y_train)
+ 
+ii.Save the Model:  
+CODE:
+import joblib
+joblib.dump(model, 'model.pkl')
+ 
+iii. Reuse the Model
+CODE:
+model = joblib.load('model.pkl')
+y_pred = model.predict(X_test)
+from sklearn.metrics import accuracy_score
+print("Accuracy:", accuracy_score(y_test, y_pred))
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+4. Creating a Reproducible ML Pipeline using Jupyter and Virtual Environment:
+a. Tasks to Perform:
+→
+i. Set up a virtual environment using venv or conda 
+• python -m venv myenv
+• myenv\Scripts\activate
+ 
+ii.Install necessary libraries like scikit-learn, pandas, matplotlib. 
+• pip install scikit-learn pandas matplotlib jupyter
+ 
+iii. Create a Jupyter notebook that:
+ 
+iv. Loads a dataset (e.g., Titanic, Wine):
+CODE:
+from sklearn.datasets import load_wine
+import pandas as pd
+ 
+data = load_wine()
+df = pd.DataFrame(data.data, columns=data.feature_names)
+df['target'] = data.target
+df.head()
+ 
+v.Performs data preprocessing:
+CODE:
+from sklearn.model_selection import train_test_split
+ 
+X = df.drop('target', axis=1)
+y = df['target']
+ 
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+ 
+vi. Trains a simple model:
+CODE:
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
+ 
+model = RandomForestClassifier()
+model.fit(X_train, y_train)
+ 
+y_pred = model.predict(X_test)
+print("Accuracy:", accuracy_score(y_test, y_pred))
+ 
+vii. Save the notebook and environment dependencies (requirements.txt):
+• pip freeze > requirements.txt
+•  
+viii. Share the notebook and environment setup on GitHub for others to reproduce:
+• Create a GitHub repo.
+• Upload:
+• Your Jupyter notebook .ipynb
+• requirements.txt file
+ 
+ 
+ 
+ 
+ 
+ 
+5. Exploratory Data Analysis (EDA) and Report Generation
+a. Tasks to Perform:
+→
+• Choose a public dataset (e.g., from Kaggle or UCI Repository).:
+CODE:
+import seaborn as sns
+import pandas as pd
+ 
+df = sns.load_dataset("titanic")
+print(df.head())
+ 
+ii.Perform data cleaning, null value handling, and visualization using seaborn or matplotlib.:
+CODE:
+import seaborn as sns
+import pandas as pd
+import matplotlib.pyplot as plt
+ 
+df = sns.load_dataset("titanic")
+ 
+df['age'].fillna(df['age'].median(), inplace=True)
+df['embarked'].fillna(df['embarked'].mode()[0], inplace=True)
+ 
+sns.countplot(x='survived', data=df)
+plt.title("Survival Count")
+plt.show()
+sns.histplot(df['age'], kde=True)
+plt.title("Age Distribution")
+plt.show()
+ 
+iii.Generate insights like correlations, distributions, and outliers. 
+CODE:
+import seaborn as sns
+import matplotlib.pyplot as plt
+df = sns.load_dataset("titanic")
+ 
+sns.heatmap(df.corr(numeric_only=True), annot=True, cmap='coolwarm')
+plt.title("Correlation Matrix")
+plt.show()
+ 
+sns.histplot(df['fare'], kde=True, bins=30)
+plt.title("Fare Distribution")
+plt.show()
+ 
+sns.boxplot(x=df['fare'])
+plt.title("Fare Outliers")
+plt.show()
+ 
+ 
+iv.Export the EDA results as a PDF report (use nbconvert, matplotlib, or pandas_profiling).
+CODE:
+!pip install pandas-profiling
+ 
+from pandas_profiling import ProfileReport
+ 
+profile = ProfileReport(df, title="Titanic EDA Report", explorative=True)
+profile.to_file("titanic_eda_report.html")  
+ 
+ 
+v.Commit the EDA notebook and report to your GitHub repository. 
+• Save the notebook as .ipynb (use Jupyter Notebook or Google Colab).
+• Push the notebook and the generated PDF/HTML report (titanic_eda_report.html or .pdf) to your GitHub repository.
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+6. Visualizing Model Performance
+a. Tasks to Perform:
+→
+i.Train a binary classification model (e.g., Logistic Regression). : 
+CODE:
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import confusion_matrix, precision_recall_curve, accuracy_score
+ 
+df = sns.load_dataset("titanic")
+ 
+df['age'] = df['age'].fillna(df['age'].median())  # Assign result back to the column
+df['embarked'] = df['embarked'].fillna(df['embarked'].mode()[0])  # Assign result back to the column
+df.dropna(subset=['survived', 'pclass', 'age', 'fare'], inplace=True)  # This can remain as is
+ 
+X = df[['pclass', 'age', 'fare']]
+y = df['survived']
+ 
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+ 
+log_reg = LogisticRegression(max_iter=200)
+rf = RandomForestClassifier()
+ 
+log_reg.fit(X_train, y_train)
+rf.fit(X_train, y_train)
+ 
+log_reg_pred = log_reg.predict(X_test)
+rf_pred = rf.predict(X_test)
+ 
+ 
+log_reg_acc = accuracy_score(y_test, log_reg_pred)
+rf_acc = accuracy_score(y_test, rf_pred)
+ 
+print(f"Logistic Regression Accuracy: {log_reg_acc:.4f}")
+print(f"Random Forest Accuracy: {rf_acc:.4f}")
+ 
+log_reg_cm = confusion_matrix(y_test, log_reg_pred)
+print(f"Logistic Regression Confusion Matrix:\n{log_reg_cm}")
+ 
+rf_cm = confusion_matrix(y_test, rf_pred)
+print(f"Random Forest Confusion Matrix:\n{rf_cm}")
+ 
+log_reg_precision, log_reg_recall, _ = precision_recall_curve(y_test, log_reg_pred)
+plt.figure(figsize=(10, 6))
+plt.plot(log_reg_recall, log_reg_precision, label="Logistic Regression")
+plt.xlabel("Recall")
+plt.ylabel("Precision")
+plt.title("Precision-Recall Curve for Logistic Regression")
+plt.legend()
+plt.show()
+ 
+rf_precision, rf_recall, _ = precision_recall_curve(y_test, rf_pred)
+plt.figure(figsize=(10, 6))
+plt.plot(rf_recall, rf_precision, label="Random Forest", color='orange')
+plt.xlabel("Recall")
+plt.ylabel("Precision")
+plt.title("Precision-Recall Curve for Random Forest")
+plt.legend()
+plt.show()
+ 
+ 
+ii.Plot and save:
+CODE:
+from sklearn.metrics import ConfusionMatrixDisplay
+ 
+log_reg_cm = confusion_matrix(y_test, log_reg_pred)
+ConfusionMatrixDisplay(log_reg_cm).plot(cmap='Blues')
+plt.title("Logistic Regression Confusion Matrix")
+plt.savefig('results/log_reg_confusion_matrix.png')
+plt.show()
+ 
+rf_cm = confusion_matrix(y_test, rf_pred)
+ConfusionMatrixDisplay(rf_cm).plot(cmap='Blues')
+plt.title("Random Forest Confusion Matrix")
+plt.savefig('results/rf_confusion_matrix.png')
+plt.show()
+ 
+iiiConfusion matrix .
+CODE:
+from sklearn.metrics import ConfusionMatrixDisplay
+ 
+log_reg_cm = confusion_matrix(y_test, log_reg_pred)
+ConfusionMatrixDisplay(log_reg_cm).plot(cmap='Blues')
+plt.title("Logistic Regression Confusion Matrix")
+plt.savefig('results/log_reg_confusion_matrix.png')
+plt.show()
+ 
+rf_cm = confusion_matrix(y_test, rf_pred)
+ConfusionMatrixDisplay(rf_cm).plot(cmap='Blues')
+plt.title("Random Forest Confusion Matrix")
+plt.savefig('results/rf_confusion_matrix.png')
+plt.show()
+ 
+iv. Precision-Recall curve:
+CODE:
+log_reg_precision, log_reg_recall, _ = precision_recall_curve(y_test, log_reg.predict_proba(X_test)[:, 1])
+plt.plot(log_reg_recall, log_reg_precision)
+plt.title("Logistic Regression Precision-Recall Curve")
+plt.savefig('results/log_reg_precision_recall.png')
+plt.show()
+ 
+rf_precision, rf_recall, _ = precision_recall_curve(y_test, rf.predict_proba(X_test)[:, 1])
+plt.plot(rf_recall, rf_precision)
+plt.title("Random Forest Precision-Recall Curve")
+plt.savefig('results/rf_precision_recall.png')
+plt.show()
+ 
+v.Compare performance between two models and explain which one is better. 
+CODE:
+from sklearn.metrics import accuracy_score 
+ 
+log_reg_acc = accuracy_score(y_test, log_reg_pred)
+rf_acc = accuracy_score(y_test, rf_pred)
+ 
+print("Logistic Regression Accuracy:", round(log_reg_acc, 2))
+print("Random Forest Accuracy:", round(rf_acc, 2))
+ 
+ 
+ 
+ 

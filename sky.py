@@ -34,19 +34,33 @@ for token in doc:
 
 # 2)Study and understand the concepts of Morphology by the use of add, delete table. 
    
-import pandas as pd
+morph_table = [
+    {"Base Word": "play", "Prefix": "re", "Suffix": "ing"},
+    {"Base Word": "happy", "Prefix": "un", "Suffix": ""},
+    {"Base Word": "teach", "Prefix": "", "Suffix": "er"}
+]
 
-data = {
-    "Base Word": ["play", "happy", "run", "write", "book", "un", "care", "boy"],
-    "Added Morpheme": ["-ed", "-ness", "-ing", "-er", "-s", "-happy", "-less", "-ish"],
-    "New Word (After Addition)": ["played", "happiness", "running", "writer", "books", "unhappy", "careless", "boyish"],
-    "Deleted Morpheme": ["-", "-", "-", "-", "-s", "-", "-", "-"],
-    "New Word (After Deletion)": ["play", "happy", "run", "write", "book", "happy", "care", "boy"]
-}
+for row in morph_table:
+    base = row["Base Word"]
+    prefix = row["Prefix"]
+    suffix = row["Suffix"]
+    new_word = prefix + base + suffix
+    row["New Word"] = new_word
 
-df = pd.DataFrame(data)
+print("Table After Add Operation:\n")
+for row in morph_table:
+    print(row)
 
-print(df)
+print("\nTable After Delete Operation:\n")
+for row in morph_table:
+    new_word = row["New Word"]
+    prefix = row["Prefix"]
+    suffix = row["Suffix"]
+
+    word_after_prefix_removal = new_word[len(prefix):] if prefix and new_word.startswith(prefix) else new_word
+    word_after_suffix_removal = word_after_prefix_removal[:-len(suffix)] if suffix and new_word.endswith(suffix) else word_after_prefix_removal
+    
+    print(f"Original: {new_word} ➡ Base: {word_after_suffix_removal}")
 
 
 
